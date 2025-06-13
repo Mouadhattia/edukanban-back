@@ -9,6 +9,7 @@ const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const schoolRoutes = require('./routes/schoolRoutes');
 const organizationRoutes = require('./routes/organizationRoutes');
+const siteBuilderRoutes = require('./routes/siteBuilderRoutes');
 
 // Initialize express app
 const app = express();
@@ -23,6 +24,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/school', schoolRoutes);
 app.use('/api/organization', organizationRoutes);
+app.use('/api/builder', siteBuilderRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -40,7 +42,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Start server
 if (process.env.NODE_ENV !== 'test') {
-  const PORT = process.env.PORT ;
+  const PORT = process.env.PORT;
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

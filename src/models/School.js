@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 
+const STATUS = {
+  PENDING: 'pending',
+  ACTIVE: 'active',
+  SUSPENDED:'suspended'
+}
 const schoolSchema = new mongoose.Schema({
   schoolName: {
     type: String,
@@ -16,6 +21,15 @@ const schoolSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
+  },
+  status:{
+    type: String,
+    enum: Object.values(STATUS),
+    default: STATUS.PENDING
+  },
+  schoolWebsite: {
+    type: String,
+    trim: true,
   }
 }, {
   timestamps: true

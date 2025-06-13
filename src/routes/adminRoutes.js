@@ -52,6 +52,36 @@ const schoolValidation = [
     .withMessage('School type is required')
 ];
 
+const templateValidation = [
+  body('name')
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage('Template name must be at least 3 characters long'),
+  body('status')
+    .trim()
+    .isIn(['published', 'draft', 'pending_approval','archived','rejected'])
+    .withMessage('Invalid status. Must be publish, private, or pending')
+];
+
+const standardValidation = [
+  body('name')
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage('Standard name must be at least 3 characters long'),
+  body('category')
+    .trim()
+    .notEmpty()
+    .withMessage('Category is required'),
+  body('region')
+    .trim()
+    .notEmpty()
+    .withMessage('Region is required'),
+  body('status')
+    .trim()
+    .isIn(['active', 'pending', 'suspended'])
+    .withMessage('Invalid status. Must be active, pending, or suspended')
+];
+
 const organizationValidation = [
   body('organizationName')
     .trim()
@@ -98,5 +128,23 @@ router.get('/organizations/:id', adminController.getOrganization);
 router.post('/organizations', organizationValidation, adminController.createOrganization);
 router.put('/organizations/:id', organizationValidation, adminController.updateOrganization);
 router.delete('/organizations/:id', adminController.deleteOrganization);
+
+// Template Management Routes
+router.get('/templates', adminController.getTemplates);
+router.get('/templates/:id', adminController.getTemplate);
+router.post('/templates', templateValidation, adminController.createTemplate);
+router.put('/templates/:id', templateValidation, adminController.updateTemplate);
+router.delete('/templates/:id', adminController.deleteTemplate);
+
+// Standard Management Routes
+router.get('/standards', adminController.getStandards);
+router.get('/standards/:id', adminController.getStandard);
+router.post('/standards', standardValidation, adminController.createStandard);
+router.put('/standards/:id', standardValidation, adminController.updateStandard);
+router.delete('/standards/:id', adminController.deleteStandard);
+
+// Analytics Routes
+router.get('/analytics/user-growth', adminController.getUserGrowth);
+router.get('/analytics/user-distribution', adminController.getUserDistribution);
 
 module.exports = router;

@@ -1,12 +1,16 @@
 const { User } = require('../models/User');
 const { School } = require('../models/School');
 const { Organization } = require('../models/Organization');
+const { Template } = require('../models/Template');
+const { Standard } = require('../models/Standard');
+const moment = require('moment');
 
 // User Management
 const getUsers = async (req, res) => {
   try {
     const { page = 1, limit = 10, search, role } = req.query;
     const query = {};
+
 
     // Search filter
     if (search) {
@@ -17,11 +21,13 @@ const getUsers = async (req, res) => {
     }
 
     // Role filter
-    if (role) {
+    if (role && role!=='undefined') {
       query.role = role;
     }
 
     const totalUsers = await User.countDocuments(query);
+   
+    
     const users = await User.find(query)
       .select('-password')
       .limit(limit * 1)
@@ -177,11 +183,12 @@ const getSchool = async (req, res) => {
 
 const createSchool = async (req, res) => {
   try {
-    const { schoolName, schoolDistrict, schoolType } = req.body;
+    const { schoolName, schoolDistrict, schoolType,schoolWebsite } = req.body;
     const school = new School({
       schoolName,
       schoolDistrict,
-      schoolType
+      schoolType,
+      schoolWebsite
     });
     await school.save();
     res.status(201).json({
@@ -227,8 +234,9 @@ const deleteSchool = async (req, res) => {
 // Organization Management
 const getOrganizations = async (req, res) => {
   try {
-    const { page = 1, limit = 10, search, organizationType } = req.query;
+    const { page=1 , limit=2 , search, organizationType } = req.query;
     const query = {};
+
 
     // Search filter
     if (search) {
@@ -239,7 +247,7 @@ const getOrganizations = async (req, res) => {
     }
 
     // Organization type filter
-    if (organizationType) {
+    if (organizationType && organizationType!='undefined') {
       query.organizationType = organizationType;
     }
 
@@ -249,16 +257,35 @@ const getOrganizations = async (req, res) => {
       .skip((page - 1) * limit)
       .exec();
 
+
+    // Enhance each organization with userCount and admin
+    const enhancedOrganizations = await Promise.all(
+      organizations.map(async (org) => {
+        const userCount = await User.countDocuments({ organizationIds: org._id });
+        const admin = await User.findOne({
+          organizationIds: org._id,
+          role: 'organization-admin'
+        }).select('-password'); // Don't return password
+
+        return {
+          ...org.toObject(),
+          userCount,
+          admin,
+        };
+      })
+    );
+
     res.json({
-      organizations,
+      organizations: enhancedOrganizations,
       totalPages: Math.ceil(totalOrganizations / limit),
-      currentPage: page,
+      currentPage: parseInt(page),
       totalOrganizations
     });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching organizations', error: error.message });
   }
 };
+
 
 const getOrganization = async (req, res) => {
   try {
@@ -273,18 +300,30 @@ const getOrganization = async (req, res) => {
 };
 
 const createOrganization = async (req, res) => {
+
   try {
-    const { organizationName, organizationWebsite, organizationType, primarySubjectAreas } = req.body;
+    const { organizationName, organizationWebsite, organizationType, primarySubjectAreas,status } = req.body;
+  
+    
     const organization = new Organization({
       organizationName,
       organizationWebsite,
       organizationType,
-      primarySubjectAreas
+      primarySubjectAreas,
+      status
     });
     await organization.save();
+
+    const userCount = await User.countDocuments({ organizationIds: organization._id });
+    const admin = await User.findOne({
+      organizationIds: organization._id,
+      role: 'organization-admin'
+    }).select('-password'); 
+
+
     res.status(201).json({
       message: 'Organization created successfully',
-      organization
+     organization: {...organization._doc,userCount,admin}
     });
   } catch (error) {
     res.status(500).json({ message: 'Error creating organization', error: error.message });
@@ -301,9 +340,14 @@ const updateOrganization = async (req, res) => {
     if (!organization) {
       return res.status(404).json({ message: 'Organization not found' });
     }
+    const userCount = await User.countDocuments({ organizationIds: organization._id });
+    const admin = await User.findOne({
+      organizationIds: organization._id,
+      role: 'organization-admin'
+    }).select('-password'); 
     res.json({
       message: 'Organization updated successfully',
-      organization
+      organization:{...organization._doc,userCount,admin}
     });
   } catch (error) {
     res.status(500).json({ message: 'Error updating organization', error: error.message });
@@ -319,6 +363,279 @@ const deleteOrganization = async (req, res) => {
     res.json({ message: 'Organization deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting organization', error: error.message });
+  }
+};
+
+// Template Management
+const getTemplates = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, search, status } = req.query;
+    const query = {};
+
+    // Search filter
+    if (search) {
+      query.name = { $regex: search, $options: 'i' };
+    }
+
+    // Status filter
+    if (status) {
+      query.status = status;
+    }
+
+    const totalTemplates = await Template.countDocuments(query);
+    const templates = await Template.find(query)
+    .populate({
+      path: 'createdBy',
+      select: 'fullName email organizationIds',
+      populate: {
+        path: 'organizationIds',
+        select: 'organizationName' 
+      }
+    })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    res.json({
+      templates,
+      totalPages: Math.ceil(totalTemplates / limit),
+      currentPage: page,
+      totalTemplates
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching templates', error: error.message });
+  }
+};
+
+const getTemplate = async (req, res) => {
+  try {
+    const template = await Template.findById(req.params.id)
+      .populate('createdBy', 'fullName email');
+    if (!template) {
+      return res.status(404).json({ message: 'Template not found' });
+    }
+    res.json(template);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching template', error: error.message });
+  }
+};
+
+const createTemplate = async (req, res) => {
+  try {
+    const { name, status } = req.body;
+
+    const template = new Template({
+      name,
+      status,
+      createdBy: req.user.userId
+    });
+
+    await template.save();
+    const populatedTemplate = await Template.findById(template._id)
+      .populate('createdBy', 'fullName email');
+
+    res.status(201).json({
+      message: 'Template created successfully',
+      template: populatedTemplate
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating template', error: error.message });
+  }
+};
+
+const updateTemplate = async (req, res) => {
+  try {
+    const { name, status } = req.body;
+    const template = await Template.findById(req.params.id);
+
+    if (!template) {
+      return res.status(404).json({ message: 'Template not found' });
+    }
+
+    if (name) template.name = name;
+    if (status) template.status = status;
+
+    await template.save();
+    const updatedTemplate = await Template.findById(template._id)
+      .populate('createdBy', 'fullName email');
+
+    res.json({
+      message: 'Template updated successfully',
+      template: updatedTemplate
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating template', error: error.message });
+  }
+};
+
+const deleteTemplate = async (req, res) => {
+  try {
+    const template = await Template.findByIdAndDelete(req.params.id);
+    if (!template) {
+      return res.status(404).json({ message: 'Template not found' });
+    }
+    res.json({ message: 'Template deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting template', error: error.message });
+  }
+};
+
+// Standard Management
+const getStandards = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, search, status } = req.query;
+    const query = {};
+
+    // Search filter
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { category: { $regex: search, $options: 'i' } },
+        { region: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    // Status filter
+    if (status) {
+      query.status = status;
+    }
+
+    const totalStandards = await Standard.countDocuments(query);
+    const standards = await Standard.find(query)
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    res.json({
+      standards,
+      totalPages: Math.ceil(totalStandards / limit),
+      currentPage: page,
+      totalStandards
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching standards', error: error.message });
+  }
+};
+
+const getStandard = async (req, res) => {
+  try {
+    const standard = await Standard.findById(req.params.id);
+    if (!standard) {
+      return res.status(404).json({ message: 'Standard not found' });
+    }
+    res.json(standard);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching standard', error: error.message });
+  }
+};
+
+const createStandard = async (req, res) => {
+  try {
+    const { name, category, region, status } = req.body;
+
+    const standard = new Standard({
+      name,
+      category,
+      region,
+      status
+    });
+
+    await standard.save();
+    res.status(201).json({
+      message: 'Standard created successfully',
+      standard
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating standard', error: error.message });
+  }
+};
+
+const updateStandard = async (req, res) => {
+  try {
+    const standard = await Standard.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true, runValidators: true }
+    );
+    if (!standard) {
+      return res.status(404).json({ message: 'Standard not found' });
+    }
+    res.json({
+      message: 'Standard updated successfully',
+      standard
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating standard', error: error.message });
+  }
+};
+
+const deleteStandard = async (req, res) => {
+  try {
+    const standard = await Standard.findByIdAndDelete(req.params.id);
+    if (!standard) {
+      return res.status(404).json({ message: 'Standard not found' });
+    }
+    res.json({ message: 'Standard deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting standard', error: error.message });
+  }
+};
+
+// Analytics
+const getUserGrowth = async (req, res) => {
+  try {
+    const { days = 30 } = req.query;
+    const startDate = moment().subtract(days, 'days').startOf('day');
+
+    const users = await User.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate.toDate() }
+        }
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          users: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          date: '$_id',
+          users: 1
+        }
+      },
+      { $sort: { date: 1 } }
+    ]);
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user growth data', error: error.message });
+  }
+};
+
+const getUserDistribution = async (req, res) => {
+  try {
+    const distribution = await User.aggregate([
+      {
+        $group: {
+          _id: '$role',
+          value: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          role: '$_id',
+          value: 1
+        }
+      }
+    ]);
+
+    res.json(distribution);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user distribution data', error: error.message });
   }
 };
 
@@ -340,5 +657,20 @@ module.exports = {
   getOrganization,
   createOrganization,
   updateOrganization,
-  deleteOrganization
+  deleteOrganization,
+  // Template Management
+  getTemplates,
+  getTemplate,
+  createTemplate,
+  updateTemplate,
+  deleteTemplate,
+  // Standard Management
+  getStandards,
+  getStandard,
+  createStandard,
+  updateStandard,
+  deleteStandard,
+  // Analytics
+  getUserGrowth,
+  getUserDistribution
 };

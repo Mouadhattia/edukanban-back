@@ -4,6 +4,8 @@ const { School } = require('../models/School');
 const { Organization } = require('../models/Organization');
 const { validationResult } = require('express-validator');
 const { OAuth2Client } = require('google-auth-library');
+const {  sendVerificationEmail,  verifyResetToken, sendPasswordResetEmail } = require('../utils/emailService');
+
 
 
 
@@ -39,7 +41,7 @@ function generatePassword(
 // Register new user
 const register = async (req, res) => {
 
-        
+      
   
   try {
     const { email, password, fullName, invitationCode } = req.body;
@@ -72,9 +74,17 @@ const register = async (req, res) => {
           fullName,
           schoolIds: [school._id]
         });
-        await user.save();
+       
 
         const token = user.generateAuthToken();
+ 
+      await user.save();
+      await sendVerificationEmail(user.email, verificationToken);
+
+
+
+     
+
         return res.status(201).json({
           message: 'School and school admin registered successfully',
           token,
@@ -123,6 +133,7 @@ const register = async (req, res) => {
           organization
         });
       }
+      
     }
 
     // Cases 2, 3, & 4: Registration with invitation code
@@ -169,10 +180,18 @@ const register = async (req, res) => {
       }
 
       const user = new User(userData);
+      // Generate email verification token
+      const verificationToken = generateVerificationToken(user._id);
+      user.emailVerificationToken = verificationToken;
+      user.emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+      
       await user.save();
 
       // Mark invitation code as used
       await code.markAsUsed(user._id);
+      
+      // Send verification email
+    await sendVerificationEmail(user.email, verificationToken);
 
       const token = user.generateAuthToken();
       return res.status(201).json({
@@ -216,9 +235,16 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password.' });
     }
 
-    // Check if user is active
+    // Check if user is active and email is verified
     if (!user.active) {
       return res.status(401).json({ message: 'Account is deactivated. Please contact administrator.' });
+    }
+    
+    if (!user.isEmailVerified) {
+      return res.status(401).json({ 
+        message: 'Please verify your email address before logging in.',
+        needsVerification: true
+      });
     }
 
     // Verify password
@@ -254,11 +280,14 @@ const login = async (req, res) => {
 // Get current user profile
 const getCurrentUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).select('-password');
+
+    
+    const user = req.user;
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
-    res.json(user);
+    // const currentUser =  await User.findById(user.userId)
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: 'Server error while fetching user profile.', error: error.message });
   }
@@ -369,9 +398,69 @@ const googleLogin = async (req, res) => {
   }
 };
 
+const requestPasswordReset = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      // For security reasons, don't reveal if user exists
+      return res.status(200).json({
+        message: 'If a user with this email exists, a password reset link will be sent'
+      });
+    }
+
+    // Send password reset email
+    await sendPasswordResetEmail(user);
+
+    res.status(200).json({
+      message: 'If a user with this email exists, a password reset link will be sent'
+    });
+  } catch (error) {
+    console.error('Password reset request error:', error);
+    res.status(500).json({
+      message: 'Error processing password reset request'
+    });
+  }
+};
+
+// Reset password
+const resetPassword = async (req, res) => {
+  try {
+    const { password, token } = req.body;
+
+    // Verify reset token and get user
+    let user;
+    try {
+      user = await verifyResetToken(token);
+    } catch (error) {
+      return res.status(400).json({
+        message: error.message || 'Invalid or expired reset token'
+      });
+    }
+
+    // Update password and clear reset token
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.status(200).json({
+      message: 'Password reset successful'
+    });
+  } catch (error) {
+    console.error('Password reset error:', error);
+    res.status(500).json({
+      message: 'Error resetting password'
+    });
+  }
+};
 module.exports = {
   register,
   login,
   getCurrentUser,
-  googleLogin
+  googleLogin,
+  resetPassword,
+  requestPasswordReset
 };

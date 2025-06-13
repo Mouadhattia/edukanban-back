@@ -1,6 +1,7 @@
 const express = require('express');
 const { body } = require('express-validator');
 const authController = require('../controllers/authController');
+const emailVerificationController = require('../controllers/emailVerificationController');
 const { verifyToken } = require('../middleware/auth');
 const { ROLES } = require('../models/User');
 
@@ -97,6 +98,25 @@ const loginValidation = [
     .withMessage('Password is required')
 ];
 
+const requestResetValidation = [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please provide a valid email')
+];
+
+const resetPasswordValidation = [
+  body('token')
+    .notEmpty()
+    .withMessage('Reset token is required'),
+  body('password')
+    .isLength({ min: 8 })
+    .withMessage('New password must be at least 8 characters long')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)
+    .withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number')
+];
+
+
 module.exports = router;
 
 // Routes
@@ -106,5 +126,18 @@ router.post('/login', loginValidation, authController.login);
 // Google login route
 router.post('/google/login', authController.googleLogin);
 router.get('/profile', verifyToken, authController.getCurrentUser);
+
+// Email verification routes
+router.get('/verify-email/:token', emailVerificationController.verifyEmail);
+router.post('/resend-verification', [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please provide a valid email')
+], emailVerificationController.resendVerificationEmail);
+
+// Password reset routes
+router.post('/request-password-reset', requestResetValidation, authController.requestPasswordReset);
+router.post('/reset-password', resetPasswordValidation, authController.resetPassword);
 
 module.exports = router;

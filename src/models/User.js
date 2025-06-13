@@ -56,18 +56,28 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Organization'
   }],
-  status:{
+  status: {
     type: String,
     enum: Object.values(STATUS),
     default: STATUS.PENDING
-  }
+  },
+  isEmailVerified: {
+    type: Boolean,
+    default: false
+  },
+  emailVerificationToken: String,
+  emailVerificationExpires: Date,
+  resetPasswordToken: String,
+  resetPasswordExpires: Date
 }, {
   timestamps: true
 });
 
 // Validate that either schoolIds or organizationIds is present and not empty
 userSchema.pre('validate', function(next) {
-  if ((!this.schoolIds || this.schoolIds.length === 0) && (!this.organizationIds || this.organizationIds.length === 0)) {
+  if (this.role !== ROLES.SUPER_ADMIN &&
+      (!this.schoolIds || this.schoolIds.length === 0) &&
+      (!this.organizationIds || this.organizationIds.length === 0)) {
     this.invalidate('schoolIds', 'Either schoolIds or organizationIds must be provided with at least one value');
     this.invalidate('organizationIds', 'Either schoolIds or organizationIds must be provided with at least one value');
   }
@@ -102,7 +112,10 @@ userSchema.methods.generateAuthToken = function() {
       schoolIds: this.schoolIds,
       email: this.email,
       fullName: this.fullName,
-      status: this.status
+      status: this.status,
+      schoolIds:this.schoolIds,
+      organizationIds:this.organizationIds
+
     },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN }

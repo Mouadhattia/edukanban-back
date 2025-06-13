@@ -65,7 +65,7 @@ const getOrganizationUsers = async (req, res) => {
   try {
     const { organizationIds } = req.user;
     const organizationId = organizationIds[0]; // Use first organization for now
-    const { page = 1, limit = 10, role, search } = req.query;
+    const { page , limit , role, search } = req.query;
     
     const query = { organizationIds: organizationId };
     
@@ -83,13 +83,13 @@ const getOrganizationUsers = async (req, res) => {
     const totalUsers = await User.countDocuments(query);
     const users = await User.find(query)
       .select('-password')
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
+      .limit(Number(limit) * 1)
+      .skip((page - 1) * Number(limit))
       .exec();
 
     res.json({
       users,
-      totalPages: Math.ceil(totalUsers / limit),
+      totalPages: Math.ceil(totalUsers / Number(limit)),
       currentPage: page,
       totalUsers
     });

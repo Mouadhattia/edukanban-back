@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+
+const STATUS = {
+  PENDING: 'pending',
+  ACTIVE: 'active',
+  SUSPENDED:'suspended'
+}
+
 const organizationSchema = new mongoose.Schema({
   organizationName: {
     type: String,
@@ -16,6 +23,11 @@ const organizationSchema = new mongoose.Schema({
       },
       message: props => `${props.value} is not a valid website URL!`
     }
+  },
+  status:{
+    type: String,
+    enum: Object.values(STATUS),
+    default: STATUS.PENDING
   },
   organizationType: {
     type: String,
