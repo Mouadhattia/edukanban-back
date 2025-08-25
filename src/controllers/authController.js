@@ -1,22 +1,21 @@
-const { User, ROLES } = require('../models/User');
-const InvitationCode = require('../models/InvitationCode');
-const { School } = require('../models/School');
-const { Organization } = require('../models/Organization');
-const { validationResult } = require('express-validator');
-const { OAuth2Client } = require('google-auth-library');
-const {  sendVerificationEmail,  verifyResetToken, sendPasswordResetEmail } = require('../utils/emailService');
+const { User, ROLES } = require("../models/User");
+const InvitationCode = require("../models/InvitationCode");
+const { School } = require("../models/School");
+const { Organization } = require("../models/Organization");
+const { validationResult } = require("express-validator");
+const { OAuth2Client } = require("google-auth-library");
+const {
+  sendVerificationEmail,
+  verifyResetToken,
+  sendPasswordResetEmail,
+  sendContactEmail,
+} = require("../utils/emailService");
 
-
-
-
-
-
-
-// genrate password 
+// genrate password
 function generatePassword(
   length = 12,
   options = { uppercase: true, lowercase: true, numbers: true, symbols: true }
-){
+) {
   const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const lower = "abcdefghijklmnopqrstuvwxyz";
   const nums = "0123456789";
@@ -40,29 +39,30 @@ function generatePassword(
 }
 // Register new user
 const register = async (req, res) => {
-
-      
-  
   try {
     const { email, password, fullName, invitationCode } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists with this email.' });
+      return res
+        .status(400)
+        .json({ message: "User already exists with this email." });
     }
 
     // Case 1 & 5: School Admin or Organization Admin registration
-    if (req.body.role === ROLES.SCHOOL_ADMIN || req.body.role === ROLES.ORGANIZATION_ADMIN) {
+    if (
+      req.body.role === ROLES.SCHOOL_ADMIN ||
+      req.body.role === ROLES.ORGANIZATION_ADMIN
+    ) {
       if (req.body.role === ROLES.SCHOOL_ADMIN) {
-       
         const { schoolName, schoolDistrict, schoolType } = req.body;
-        
+
         // Create school first
         const school = new School({
           schoolName,
           schoolDistrict,
-          schoolType
+          schoolType,
         });
         await school.save();
 
@@ -72,40 +72,40 @@ const register = async (req, res) => {
           password,
           role: ROLES.SCHOOL_ADMIN,
           fullName,
-          schoolIds: [school._id]
+          schoolIds: [school._id],
         });
-       
 
         const token = user.generateAuthToken();
- 
-      await user.save();
-      await sendVerificationEmail(user.email, verificationToken);
 
-
-
-     
+        await user.save();
+        await sendVerificationEmail(user.email, verificationToken);
 
         return res.status(201).json({
-          message: 'School and school admin registered successfully',
+          message: "School and school admin registered successfully",
           token,
           user: {
             _id: user._id,
             email: user.email,
             role: user.role,
             fullName: user.fullName,
-            schoolId: user.schoolId
+            schoolId: user.schoolId,
           },
-          school
+          school,
         });
       } else {
-        const { organizationName, organizationWebsite, organizationType, primarySubjectAreas } = req.body;
-    
+        const {
+          organizationName,
+          organizationWebsite,
+          organizationType,
+          primarySubjectAreas,
+        } = req.body;
+
         // Create organization first
         const organization = new Organization({
           organizationName,
           organizationWebsite,
           organizationType,
-          primarySubjectAreas
+          primarySubjectAreas,
         });
         await organization.save();
 
@@ -115,52 +115,57 @@ const register = async (req, res) => {
           password,
           role: ROLES.ORGANIZATION_ADMIN,
           fullName,
-          organizationIds: [organization._id]
+          organizationIds: [organization._id],
         });
         await user.save();
 
         const token = user.generateAuthToken();
         return res.status(201).json({
-          message: 'Organization and organization admin registered successfully',
+          message:
+            "Organization and organization admin registered successfully",
           token,
           user: {
             _id: user._id,
             email: user.email,
             role: user.role,
             fullName: user.fullName,
-            organizationId: user.organizationId
+            organizationId: user.organizationId,
           },
-          organization
+          organization,
         });
       }
-      
     }
 
     // Cases 2, 3, & 4: Registration with invitation code
     if (invitationCode) {
       const code = await InvitationCode.findOne({ code: invitationCode });
-   
-      
+
       if (!code) {
-        return res.status(400).json({ message: 'Invitation code not found.' });
+        return res.status(400).json({ message: "Invitation code not found." });
       }
-      
+
       if (!code.active) {
-        return res.status(400).json({ message: 'Invitation code is inactive.' });
+        return res
+          .status(400)
+          .json({ message: "Invitation code is inactive." });
       }
-      
+
       if (code.expirationDate <= new Date()) {
-        return res.status(400).json({ message: 'Invitation code has expired.' });
+        return res
+          .status(400)
+          .json({ message: "Invitation code has expired." });
       }
-      
+
       if (code.usedBy) {
-        return res.status(400).json({ message: 'Invitation code has already been used.' });
+        return res
+          .status(400)
+          .json({ message: "Invitation code has already been used." });
       }
 
       // Validate role matches invitation code
       if (code.role !== req.body.role) {
-        return res.status(400).json({ 
-          message: 'Role mismatch with invitation code.' 
+        return res.status(400).json({
+          message: "Role mismatch with invitation code.",
         });
       }
 
@@ -169,7 +174,7 @@ const register = async (req, res) => {
         email,
         password,
         role: code.role,
-        fullName
+        fullName,
       };
 
       // Add proper organization or school association
@@ -183,19 +188,21 @@ const register = async (req, res) => {
       // Generate email verification token
       const verificationToken = generateVerificationToken(user._id);
       user.emailVerificationToken = verificationToken;
-      user.emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-      
+      user.emailVerificationExpires = new Date(
+        Date.now() + 24 * 60 * 60 * 1000
+      ); // 24 hours
+
       await user.save();
 
       // Mark invitation code as used
       await code.markAsUsed(user._id);
-      
+
       // Send verification email
-    await sendVerificationEmail(user.email, verificationToken);
+      await sendVerificationEmail(user.email, verificationToken);
 
       const token = user.generateAuthToken();
       return res.status(201).json({
-        message: 'User registered successfully',
+        message: "User registered successfully",
         token,
         user: {
           _id: user._id,
@@ -203,19 +210,23 @@ const register = async (req, res) => {
           role: user.role,
           fullName: user.fullName,
           schoolId: user.schoolId,
-          organizationId: user.organizationId
-        }
+          organizationId: user.organizationId,
+        },
       });
     }
 
     // If we reach here, it's an invalid registration attempt
-    return res.status(400).json({ 
-      message: 'Invalid registration request. Please provide valid credentials and follow the registration process for your role.' 
+    return res.status(400).json({
+      message:
+        "Invalid registration request. Please provide valid credentials and follow the registration process for your role.",
     });
   } catch (error) {
     console.log(error);
-    
-    res.status(500).json({ message: 'Server error during registration.', error: error.message });
+
+    res.status(500).json({
+      message: "Server error during registration.",
+      error: error.message,
+    });
   }
 };
 
@@ -228,29 +239,33 @@ const login = async (req, res) => {
     }
 
     const { email, password } = req.body;
-
+    console.log(email, password);
     // Find user by email
     const user = await User.findOne({ email });
+
     if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password.' });
+      return res.status(401).json({ message: "Invalid email or password." });
     }
 
     // Check if user is active and email is verified
     if (!user.active) {
-      return res.status(401).json({ message: 'Account is deactivated. Please contact administrator.' });
+      return res.status(401).json({
+        message: "Account is deactivated. Please contact administrator.",
+      });
     }
-    
+
     if (!user.isEmailVerified) {
-      return res.status(401).json({ 
-        message: 'Please verify your email address before logging in.',
-        needsVerification: true
+      return res.status(401).json({
+        message: "Please verify your email address before logging in.",
+        needsVerification: true,
       });
     }
 
     // Verify password
     const isValidPassword = await user.comparePassword(password);
+
     if (!isValidPassword) {
-      return res.status(401).json({ message: 'Invalid email or password.' });
+      return res.status(401).json({ message: "Invalid email or password." });
     }
 
     // Update last login
@@ -261,7 +276,7 @@ const login = async (req, res) => {
     const token = user.generateAuthToken();
 
     res.json({
-      message: 'Login successful',
+      message: "Login successful",
       token,
       user: {
         id: user._id,
@@ -269,27 +284,30 @@ const login = async (req, res) => {
         role: user.role,
         fullName: user.fullName,
         schoolId: user.schoolId,
-        organizationId: user.organizationId
-      }
+        organizationId: user.organizationId,
+      },
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error during login.', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Server error during login.", error: error.message });
   }
 };
 
 // Get current user profile
 const getCurrentUser = async (req, res) => {
   try {
-
-    
     const user = req.user;
     if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
+      return res.status(404).json({ message: "User not found." });
     }
     // const currentUser =  await User.findById(user.userId)
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: 'Server error while fetching user profile.', error: error.message });
+    res.status(500).json({
+      message: "Server error while fetching user profile.",
+      error: error.message,
+    });
   }
 };
 
@@ -297,64 +315,68 @@ const getCurrentUser = async (req, res) => {
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  'postmessage'
+  "postmessage"
 );
 
 // Google login handler
 const googleLogin = async (req, res) => {
   try {
-    const { token,invitationCode,role } = req.body;
-  
-  
+    const { token, invitationCode, role } = req.body;
+
     // Verify Google token
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
 
     const { email, name } = ticket.getPayload();
-    
 
     // Check if user exists
     let user = await User.findOne({ email });
-    if(!user && !invitationCode) {
-      return res.status(400).json({ message: 'User not found. Please register first.' });
+    if (!user && !invitationCode) {
+      return res
+        .status(400)
+        .json({ message: "User not found. Please register first." });
     }
 
     if (!user && invitationCode && role) {
-
       const code = await InvitationCode.findOne({ code: invitationCode });
-   
-      
+
       if (!code) {
-        return res.status(400).json({ message: 'Invitation code not found.' });
+        return res.status(400).json({ message: "Invitation code not found." });
       }
-      
+
       if (!code.active) {
-        return res.status(400).json({ message: 'Invitation code is inactive.' });
+        return res
+          .status(400)
+          .json({ message: "Invitation code is inactive." });
       }
-      
+
       if (code.expirationDate <= new Date()) {
-        return res.status(400).json({ message: 'Invitation code has expired.' });
+        return res
+          .status(400)
+          .json({ message: "Invitation code has expired." });
       }
-      
+
       if (code.usedBy) {
-        return res.status(400).json({ message: 'Invitation code has already been used.' });
+        return res
+          .status(400)
+          .json({ message: "Invitation code has already been used." });
       }
 
       // Validate role matches invitation code
       if (code.role !== req.body.role) {
-        return res.status(400).json({ 
-          message: 'Role mismatch with invitation code.' 
+        return res.status(400).json({
+          message: "Role mismatch with invitation code.",
         });
       }
 
       // Create user with proper association
       const userData = {
         email,
-        password:generatePassword(12),
+        password: generatePassword(12),
         role: role,
-        fullName:name
+        fullName: name,
       };
 
       // Add proper organization or school association
@@ -364,7 +386,7 @@ const googleLogin = async (req, res) => {
         userData.schoolIds = [code.schoolId];
       }
       // Create new user if doesn't exist
-       user = new User(userData);
+      user = new User(userData);
       await user.save();
 
       // Mark invitation code as used
@@ -375,25 +397,23 @@ const googleLogin = async (req, res) => {
     const authToken = user.generateAuthToken();
 
     res.json({
-      message: 'Google login successful',
+      message: "Google login successful",
       token: authToken,
       user: {
         id: user._id,
         email: user.email,
         role: user.role,
         fullName: user.fullName,
-  
         schoolIds: user.schoolIds,
         organizationIds: user.organizationIds,
-        status: user.status
-      }
+        status: user.status,
+      },
     });
-
   } catch (error) {
-    console.error('Google login error:', error);
+    console.error("Google login error:", error);
     res.status(500).json({
-      message: 'Error during Google authentication',
-      error: error.message
+      message: "Error during Google authentication",
+      error: error.message,
     });
   }
 };
@@ -407,7 +427,8 @@ const requestPasswordReset = async (req, res) => {
     if (!user) {
       // For security reasons, don't reveal if user exists
       return res.status(200).json({
-        message: 'If a user with this email exists, a password reset link will be sent'
+        message:
+          "If a user with this email exists, a password reset link will be sent",
       });
     }
 
@@ -415,12 +436,13 @@ const requestPasswordReset = async (req, res) => {
     await sendPasswordResetEmail(user);
 
     res.status(200).json({
-      message: 'If a user with this email exists, a password reset link will be sent'
+      message:
+        "If a user with this email exists, a password reset link will be sent",
     });
   } catch (error) {
-    console.error('Password reset request error:', error);
+    console.error("Password reset request error:", error);
     res.status(500).json({
-      message: 'Error processing password reset request'
+      message: "Error processing password reset request",
     });
   }
 };
@@ -436,7 +458,7 @@ const resetPassword = async (req, res) => {
       user = await verifyResetToken(token);
     } catch (error) {
       return res.status(400).json({
-        message: error.message || 'Invalid or expired reset token'
+        message: error.message || "Invalid or expired reset token",
       });
     }
 
@@ -447,20 +469,68 @@ const resetPassword = async (req, res) => {
     await user.save();
 
     res.status(200).json({
-      message: 'Password reset successful'
+      message: "Password reset successful",
     });
   } catch (error) {
-    console.error('Password reset error:', error);
+    console.error("Password reset error:", error);
     res.status(500).json({
-      message: 'Error resetting password'
+      message: "Error resetting password",
     });
   }
 };
+
+// registerUser
+const registerUser = async (req, res) => {
+  try {
+    const { email, password, fullName, schoolId } = req.body;
+    const user = new User({
+      email,
+      password,
+      fullName,
+      schoolIds: [schoolId],
+      role: ROLES.STUDENT,
+    });
+    // Generate email verification token
+    await user.save();
+    await sendVerificationEmail(user);
+    const token = user.generateAuthToken();
+
+    res.status(200).json({
+      message: "User registered successfully",
+      token,
+      user,
+    });
+  } catch (error) {
+    console.error("Register user error:", error);
+    res.status(500).json({
+      message: "Error registering user",
+    });
+  }
+};
+
+// send  contact email with contactForm
+const sendEmail = async (req, res) => {
+  const { name, message, subject, from, to } = req.body;
+  try {
+    await sendContactEmail(from, to, subject, name, message);
+    res.status(200).json({
+      message: "Email sent successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error sending email",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
   getCurrentUser,
   googleLogin,
   resetPassword,
-  requestPasswordReset
+  requestPasswordReset,
+  registerUser,
+  sendEmail,
 };

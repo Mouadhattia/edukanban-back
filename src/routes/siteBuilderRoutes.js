@@ -4,6 +4,7 @@ const { auth } = require('../middleware/auth');
 const siteController = require('../controllers/siteController');
 const pageController = require('../controllers/pageController');
 const sectionController = require('../controllers/sectionController');
+const siteGeneratorController = require('../controllers/siteGeneratorController')
 
 // Site routes
 
@@ -30,5 +31,17 @@ router.put('/sections/:id',  sectionController.updateSection);
 router.post('/sections/order',  sectionController.updateSectionOrder);
 router.delete('/sections/:id',  sectionController.deleteSection);
 router.post('/sections/:id/duplicate',  sectionController.duplicateSection);
+
+// Image routes
+router.post('/upload/image',  siteController.uploadImage);
+router.get('/images/:filename', siteController.getImage);
+
+// gennrate next App 
+
+
+router.get('/genrate-app/:id',siteGeneratorController.genrateNextApp)
+
+
+
 
 module.exports = router;

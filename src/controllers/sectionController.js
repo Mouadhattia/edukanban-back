@@ -1,5 +1,5 @@
-const { Section } = require('../models/Section');
-const { Page } = require('../models/Page');
+const { Section } = require("../models/Section");
+const { Page } = require("../models/Page");
 
 // Create a new section
 const createSection = async (req, res) => {
@@ -9,9 +9,10 @@ const createSection = async (req, res) => {
     // Verify page exists
     const page = await Page.findById(page_id);
     if (!page) {
-      return res.status(404).json({ message: 'Page not found' });
+      return res.status(404).json({ message: "Page not found" });
     }
 
+    console.log("order_index", order_index);
     // Increment order_index of existing sections with the same page_id
     // and order_index >= the incoming order_index
     await Section.updateMany(
@@ -34,23 +35,24 @@ const createSection = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: 'Error creating section',
+      message: "Error creating section",
       error: error.message,
       validationError: error.errors,
     });
   }
 };
 
-
 // Get all sections for a page
 const getSections = async (req, res) => {
   try {
     const { page_id } = req.params;
-    const sections = await Section.find({ page_id }).sort('order_index');
+    const sections = await Section.find({ page_id }).sort("order_index");
 
     res.json(sections);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching sections', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching sections", error: error.message });
   }
 };
 
@@ -59,12 +61,14 @@ const getSection = async (req, res) => {
   try {
     const section = await Section.findById(req.params.id);
     if (!section) {
-      return res.status(404).json({ message: 'Section not found' });
+      return res.status(404).json({ message: "Section not found" });
     }
 
     res.json(section);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching section', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching section", error: error.message });
   }
 };
 
@@ -75,7 +79,7 @@ const updateSection = async (req, res) => {
     const section = await Section.findById(req.params.id);
 
     if (!section) {
-      return res.status(404).json({ message: 'Section not found' });
+      return res.status(404).json({ message: "Section not found" });
     }
 
     // Update fields
@@ -85,14 +89,12 @@ const updateSection = async (req, res) => {
 
     await section.save();
 
-    res.json(
-      section
-    );
+    res.json(section);
   } catch (error) {
-    res.status(500).json({ 
-      message: 'Error updating section', 
+    res.status(500).json({
+      message: "Error updating section",
       error: error.message,
-      validationError: error.errors // Include mongoose validation errors if any
+      validationError: error.errors, // Include mongoose validation errors if any
     });
   }
 };
@@ -105,16 +107,21 @@ const updateSectionOrder = async (req, res) => {
     // Get the section to move
     const section = await Section.findById(sectionId);
     if (!section) {
-      return res.status(404).json({ message: 'Section not found' });
+      return res.status(404).json({ message: "Section not found" });
     }
 
     const oldIndex = section.order_index;
     const pageId = section.page_id;
 
     // Find the target section with the new index on the same page
-    const targetSection = await Section.findOne({ page_id: pageId, order_index: newIndex });
+    const targetSection = await Section.findOne({
+      page_id: pageId,
+      order_index: newIndex,
+    });
     if (!targetSection) {
-      return res.status(404).json({ message: 'Target section not found at the new index' });
+      return res
+        .status(404)
+        .json({ message: "Target section not found at the new index" });
     }
 
     // Step 1: Temporarily move one to a neutral index to avoid unique conflict
@@ -124,15 +131,19 @@ const updateSectionOrder = async (req, res) => {
     await Section.findByIdAndUpdate(sectionId, { order_index: newIndex });
 
     // Step 3: Move the original target to the old index
-    await Section.findByIdAndUpdate(targetSection._id, { order_index: oldIndex });
-     const pageSections = await Section.find({ page_id: pageId }).sort('order_index');
+    await Section.findByIdAndUpdate(targetSection._id, {
+      order_index: oldIndex,
+    });
+    const pageSections = await Section.find({ page_id: pageId }).sort(
+      "order_index"
+    );
     res.json(pageSections);
   } catch (error) {
-    res.status(500).json({ message: 'Error updating section order', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error updating section order", error: error.message });
   }
 };
-
-
 
 // Delete section
 const deleteSection = async (req, res) => {
@@ -140,7 +151,7 @@ const deleteSection = async (req, res) => {
     const section = await Section.findById(req.params.id);
 
     if (!section) {
-      return res.status(404).json({ message: 'Section not found' });
+      return res.status(404).json({ message: "Section not found" });
     }
 
     const { page_id, order_index } = section;
@@ -154,24 +165,27 @@ const deleteSection = async (req, res) => {
       { $inc: { order_index: -1 } }
     );
 
-    res.json({ message: 'Section deleted successfully' });
+    res.json({ message: "Section deleted successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error deleting section', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error deleting section", error: error.message });
   }
 };
-
 
 // Duplicate section
 const duplicateSection = async (req, res) => {
   try {
     const originalSection = await Section.findById(req.params.id);
     if (!originalSection) {
-      return res.status(404).json({ message: 'Section not found' });
+      return res.status(404).json({ message: "Section not found" });
     }
 
     // Get highest order_index and add 1
-    const highestOrder = await Section.findOne({ page_id: originalSection.page_id }).sort('-order_index');
+    const highestOrder = await Section.findOne({
+      page_id: originalSection.page_id,
+    }).sort("-order_index");
     const order_index = highestOrder ? highestOrder.order_index + 1 : 0;
 
     // Create new section with same content but new order
@@ -180,17 +194,19 @@ const duplicateSection = async (req, res) => {
       type: originalSection.type,
       label: `${originalSection.label} (Copy)`,
       content: originalSection.content,
-      order_index
+      order_index,
     });
 
     await newSection.save();
 
     res.status(201).json({
-      message: 'Section duplicated successfully',
-      section: newSection
+      message: "Section duplicated successfully",
+      section: newSection,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error duplicating section', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error duplicating section", error: error.message });
   }
 };
 
@@ -201,5 +217,5 @@ module.exports = {
   updateSection,
   updateSectionOrder,
   deleteSection,
-  duplicateSection
+  duplicateSection,
 };
