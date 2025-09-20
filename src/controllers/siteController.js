@@ -5,6 +5,7 @@ const Section = require("../models/Section").Section;
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const { School } = require("../models/School");
 
 // Configure multer for image upload
 const storage = multer.diskStorage({
@@ -117,6 +118,31 @@ const getSites = async (req, res) => {
       .json({ message: "Error fetching sites", error: error.message });
   }
 };
+const getAllSites = async (req, res) => {
+  try {
+    const { status } = req.query;
+    const query = {};
+
+    // Add status filter if provided
+    if (status && status != "all") {
+      query.status = status;
+    }
+
+    // Add search filter if provided
+
+    const sites = await Site.find(query)
+      .populate("schoolId")
+
+      .sort({ created_at: -1 })
+      .exec();
+
+    res.json(sites);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching sites", error: error.message });
+  }
+};
 
 // Get single site by ID with all related data
 const getSite = async (req, res) => {
@@ -181,7 +207,9 @@ const updateSite = async (req, res) => {
 
     // Get site settings to include in response
     const settings = await SiteSettings.findOne({ site_id: site._id });
-    const siteData = { ...site._doc, settings };
+    // get  school
+    const school = await School.findById(site.schoolId);
+    const siteData = { ...site._doc, settings, schoolId: school };
 
     res.json(siteData);
   } catch (error) {
@@ -294,4 +322,5 @@ module.exports = {
   updateSiteSettings,
   uploadImage,
   getImage,
+  getAllSites,
 };

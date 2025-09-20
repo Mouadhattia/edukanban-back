@@ -1,12 +1,14 @@
-const jwt = require('jsonwebtoken');
-const { ROLES } = require('../models/User');
+const jwt = require("jsonwebtoken");
+const { ROLES } = require("../models/User");
 
 // Verify JWT token middleware
 const verifyToken = (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
+  const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) {
-    return res.status(401).json({ message: 'Access denied. No token provided.' });
+    return res
+      .status(401)
+      .json({ message: "Access denied. No token provided." });
   }
 
   try {
@@ -19,11 +21,11 @@ const verifyToken = (req, res, next) => {
       fullName: decoded.fullName,
       status: decoded.status,
       organizationIds: decoded.organizationIds || [],
-      schoolIds: decoded.schoolIds || []
+      schoolIds: decoded.schoolIds || [],
     };
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Invalid token.' });
+    res.status(401).json({ message: "Invalid token." });
   }
 };
 
@@ -31,11 +33,13 @@ const verifyToken = (req, res, next) => {
 const authorize = (...allowedRoles) => {
   return (req, res, next) => {
     if (!req.user) {
-      return res.status(401).json({ message: 'User not authenticated.' });
+      return res.status(401).json({ message: "User not authenticated." });
     }
 
     if (!allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({ message: 'Access forbidden. Insufficient permissions.' });
+      return res
+        .status(403)
+        .json({ message: "Access forbidden. Insufficient permissions." });
     }
 
     next();
@@ -62,5 +66,5 @@ module.exports = {
   isSuperAdmin,
   isOrganizationAdmin,
   isSchoolAdmin,
-  hasAnyRole
+  hasAnyRole,
 };

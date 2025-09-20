@@ -6,47 +6,47 @@ import { ShoppingBag, VideoIcon } from 'lucide-react';
 interface PageProps {}
 
 const colors = {
-  primary: '#14213D',
-  secondary: '#FCA311',
-  accent: '#E5E5E5',
-  background: '#FFFFFF',
-  text: '#101830',
+  primary: '#003049',
+  secondary: '#D62828',
+  accent: '#F77F00',
+  background: '#FCFCFC',
+  text: '#00263A',
 };
 
 const pageData = {
-  "_id": "689077753ef483401bd09ede",
-  "site_id": "6890776e3ef483401bd09ed2",
+  "_id": "68b020a98084b176679f1cc4",
+  "site_id": "68b020928084b176679f1cb5",
   "title": "Home",
   "slug": "home",
   "is_homepage": false,
   "order_index": 0,
-  "created_at": "2025-08-04T09:03:49.479Z",
-  "updated_at": "2025-08-04T09:03:49.480Z",
+  "created_at": "2025-08-28T09:26:01.840Z",
+  "updated_at": "2025-08-28T09:26:01.840Z",
   "__v": 0,
   "sections": [
     {
-      "_id": "68a852a9a80eaaa940492561",
-      "page_id": "689077753ef483401bd09ede",
+      "_id": "68b020b08084b176679f1cc9",
+      "page_id": "68b020a98084b176679f1cc4",
       "type": "heading",
       "label": "Heading",
       "order_index": 0,
       "content": {
-        "text": "New Section Heading",
-        "level": 2,
-        "backgroundColor": "#14213D",
+        "text": "Intellect School",
+        "level": 1,
+        "backgroundColor": "#003049",
         "backgroundImage": {
           "hide": true,
           "src": "",
           "alt": ""
         }
       },
-      "created_at": "2025-08-22T11:21:13.320Z",
-      "updated_at": "2025-08-22T11:30:38.074Z",
+      "created_at": "2025-08-28T09:26:08.440Z",
+      "updated_at": "2025-08-28T09:26:35.909Z",
       "__v": 0
     },
     {
-      "_id": "68a852b5a80eaaa940492565",
-      "page_id": "689077753ef483401bd09ede",
+      "_id": "68b020d48084b176679f1cd1",
+      "page_id": "68b020a98084b176679f1cc4",
       "type": "carousel",
       "label": "Animated Carousel",
       "order_index": 1,
@@ -66,7 +66,7 @@ const pageData = {
               {
                 "text": "Learn More",
                 "link": "/contact",
-                "pageId": "68a8552ea80eaaa9404925c8"
+                "pageId": "68b020ff8084b176679f1ce3"
               },
               {
                 "text": "Apply Now",
@@ -82,29 +82,29 @@ const pageData = {
               "Expert faculty guidance",
               "State-of-the-art facilities"
             ],
-            "image": "https://morweb.org/get/files/image/galleries/A_woman_sits_at_a_table_reading_a_book_while_her_laptop_is_open_in_front_of_her.png?resize=700x0",
+            "image": "https://cdn.kastatic.org/images/lohp/trusted_content_icon.png",
             "buttons": [
               {
                 "text": "View Programs",
                 "link": "/courses",
-                "pageId": "68a85506a80eaaa9404925bd"
+                "pageId": "68b0210d8084b176679f1ce8"
               }
             ]
           }
         ]
       },
-      "created_at": "2025-08-22T11:21:25.769Z",
-      "updated_at": "2025-08-22T11:34:06.456Z",
+      "created_at": "2025-08-28T09:26:44.597Z",
+      "updated_at": "2025-08-28T09:47:41.764Z",
       "__v": 0
     },
     {
-      "_id": "68a852c1a80eaaa94049256f",
-      "page_id": "689077753ef483401bd09ede",
+      "_id": "68b021758084b176679f1cf7",
+      "page_id": "68b020a98084b176679f1cc4",
       "type": "products",
       "label": "Products Grid",
       "order_index": 2,
       "content": {
-        "title": "Our Products",
+        "title": "Our Courses",
         "description": "Explore our range of educational products",
         "showAllButton": {
           "show": false,
@@ -113,91 +113,19 @@ const pageData = {
           "pageId": ""
         }
       },
-      "created_at": "2025-08-22T11:21:37.052Z",
-      "updated_at": "2025-08-22T11:21:37.055Z",
+      "created_at": "2025-08-28T09:29:25.057Z",
+      "updated_at": "2025-08-28T09:30:00.902Z",
       "__v": 0
     },
     {
-      "_id": "68a852dda80eaaa940492573",
-      "page_id": "689077753ef483401bd09ede",
-      "type": "carousel",
-      "label": "Animated Carousel",
-      "order_index": 3,
-      "content": {
-        "backgroundColor": "#f0f9ff",
-        "textPosition": "right",
-        "items": [
-          {
-            "title": "Welcome to Our School",
-            "descriptions": [
-              "Discover excellence in education"
-            ],
-            "image": "https://cdn-icons-png.flaticon.com/512/10240/10240131.png",
-            "buttons": [
-              {
-                "text": "Learn More",
-                "link": "/contact",
-                "pageId": "68a8552ea80eaaa9404925c8"
-              }
-            ]
-          }
-        ]
-      },
-      "created_at": "2025-08-22T11:22:05.300Z",
-      "updated_at": "2025-08-22T11:34:29.473Z",
-      "__v": 0
-    },
-    {
-      "_id": "68a8531ca80eaaa94049258e",
-      "page_id": "689077753ef483401bd09ede",
-      "type": "testimonials",
-      "label": "Testimonials",
-      "order_index": 4,
-      "content": {
-        "title": "What Our Students Say",
-        "backgroundColor": "#14213D",
-        "backgroundImage": {
-          "hide": true,
-          "src": "",
-          "alt": ""
-        },
-        "testimonials": [
-          {
-            "quote": "This school has transformed my learning experience. The teachers are amazing!",
-            "author": "Sarah Johnson",
-            "role": "Student",
-            "image": "https://static.vecteezy.com/system/resources/thumbnails/032/712/071/small/a-young-african-american-man-in-a-brown-t-shirt-poses-against-a-gray-background-man-looking-at-camera-ai-generative-photo.jpg",
-            "rating": 4
-          },
-          {
-            "quote": "The best decision I made was choosing this school for my education.",
-            "author": "Michael Chen",
-            "role": "Graduate",
-            "image": "data:image/jpeg;base64,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",
-            "rating": 5
-          },
-          {
-            "quote": "Outstanding facilities and dedicated staff. Highly recommended!",
-            "author": "Emily Rodriguez",
-            "role": "Parent",
-            "image": "https://static.vecteezy.com/system/resources/thumbnails/038/962/461/small/ai-generated-caucasian-successful-confident-young-businesswoman-ceo-boss-bank-employee-worker-manager-with-arms-crossed-in-formal-wear-isolated-in-white-background-photo.jpg",
-            "rating": 3
-          }
-        ]
-      },
-      "created_at": "2025-08-22T11:23:08.544Z",
-      "updated_at": "2025-08-22T11:30:45.725Z",
-      "__v": 0
-    },
-    {
-      "_id": "68a854b1a80eaaa9404925ab",
-      "page_id": "689077753ef483401bd09ede",
+      "_id": "68b0219e8084b176679f1cfd",
+      "page_id": "68b020a98084b176679f1cc4",
       "type": "features",
       "label": "Features Grid",
-      "order_index": 5,
+      "order_index": 3,
       "content": {
         "title": "Features Section",
-        "backgroundColor": "#FFFFFF",
+        "backgroundColor": "#f8fafc",
         "items": [
           {
             "title": "Quality Education",
@@ -216,29 +144,131 @@ const pageData = {
           }
         ]
       },
-      "created_at": "2025-08-22T11:29:53.837Z",
-      "updated_at": "2025-08-22T11:31:06.386Z",
+      "created_at": "2025-08-28T09:30:06.953Z",
+      "updated_at": "2025-08-28T09:30:06.960Z",
+      "__v": 0
+    },
+    {
+      "_id": "68b021aa8084b176679f1d01",
+      "page_id": "68b020a98084b176679f1cc4",
+      "type": "carousel",
+      "label": "Animated Carousel",
+      "order_index": 4,
+      "content": {
+        "backgroundColor": "#f0f9ff",
+        "textPosition": "right",
+        "items": [
+          {
+            "title": "Differentiate your classroom and engage every student.",
+            "descriptions": [
+              "We empower teachers to support their entire classroom. 90% of US teachers who have used Khan Academy have found us effective."
+            ],
+            "image": "https://cdn.kastatic.org/images/lohp/faces_collage_2@2x.png",
+            "buttons": [
+              {
+                "text": "Teachers, start here",
+                "link": "/signin",
+                "pageId": "signin"
+              }
+            ]
+          }
+        ]
+      },
+      "created_at": "2025-08-28T09:30:18.689Z",
+      "updated_at": "2025-08-28T09:31:47.415Z",
+      "__v": 0
+    },
+    {
+      "_id": "68b022188084b176679f1d15",
+      "page_id": "68b020a98084b176679f1cc4",
+      "type": "carousel",
+      "label": "Animated Carousel",
+      "order_index": 5,
+      "content": {
+        "backgroundColor": "#f0f9ff",
+        "textPosition": "left",
+        "items": [
+          {
+            "title": "You can learn anything.",
+            "descriptions": [
+              "Build a deep, solid understanding in math, science, and more."
+            ],
+            "image": "https://cdn.kastatic.org/images/lohp/laptop_collage@2x.png",
+            "buttons": [
+              {
+                "text": "Learners, start here ",
+                "link": "/signup",
+                "pageId": "signup"
+              }
+            ]
+          }
+        ]
+      },
+      "created_at": "2025-08-28T09:32:08.474Z",
+      "updated_at": "2025-08-28T09:32:58.478Z",
+      "__v": 0
+    },
+    {
+      "_id": "68b022658084b176679f1d24",
+      "page_id": "68b020a98084b176679f1cc4",
+      "type": "testimonials",
+      "label": "Testimonials",
+      "order_index": 6,
+      "content": {
+        "title": "What Our Customers Say",
+        "backgroundColor": "#003049",
+        "backgroundImage": {
+          "hide": true,
+          "src": "",
+          "alt": ""
+        },
+        "testimonials": [
+          {
+            "quote": "This school has transformed my learning experience. The teachers are amazing!",
+            "author": "Sarah Johnson",
+            "role": "Student",
+            "image": "https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTA5L3Jhd3BpeGVsX29mZmljZV8zMV9waG90b19vZl95b3VuZ19naXJsX3dpdGhfc3R1ZGVudF9iYWNrcGFja19hbl82OWU5MGJmMC04OTRiLTQ3Y2QtOTlmNS1kZTBmZmU0MThiYWJfMS5wbmc.png",
+            "rating": 5
+          },
+          {
+            "quote": "The best decision I made was choosing this school for my education.",
+            "author": "Michael Chen",
+            "role": "Graduate",
+            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrsNGuds9X8EeqS3mg9dhACdaTaouCXhVsQg&s",
+            "rating": 4
+          },
+          {
+            "quote": "Outstanding facilities and dedicated staff. Highly recommended!",
+            "author": "Emily Rodriguez",
+            "role": "Parent",
+            "image": "data:image/jpeg;base64,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",
+            "rating": 5
+          }
+        ]
+      },
+      "created_at": "2025-08-28T09:33:25.438Z",
+      "updated_at": "2025-08-28T09:36:11.185Z",
       "__v": 0
     }
   ]
 };
 const websiteData = {
-  "_id": "6890776e3ef483401bd09ed2",
+  "_id": "68b020928084b176679f1cb5",
   "name": "Intellect",
-  "schoolId": "6825af9c42c008c2bc0ccd6c",
+  "schoolId": "68af0f67a29faea3413fed2e",
   "domain": "intellect.edusite.com",
   "status": "draft",
-  "created_at": "2025-08-04T09:03:42.724Z",
-  "updated_at": "2025-08-04T09:03:42.725Z",
-  "last_updated": "2025-08-04T09:03:42.725Z",
+  "created_at": "2025-08-28T09:25:38.932Z",
+  "updated_at": "2025-08-28T09:25:38.935Z",
+  "last_updated": "2025-08-28T09:25:38.935Z",
   "__v": 0,
   "settings": {
     "colors": {
-      "primary": "#14213D",
-      "secondary": "#FCA311",
-      "accent": "#E5E5E5",
-      "background": "#FFFFFF",
-      "text": "#101830"
+      "primary": "#003049",
+      "secondary": "#D62828",
+      "accent": "#F77F00",
+      "background": "#FCFCFC",
+      "text": "#00263A"
     },
     "fonts": {
       "heading": "Arial",
@@ -249,49 +279,49 @@ const websiteData = {
       "description": "",
       "keywords": []
     },
-    "_id": "6890776e3ef483401bd09ed4",
-    "site_id": "6890776e3ef483401bd09ed2",
+    "_id": "68b020938084b176679f1cb7",
+    "site_id": "68b020928084b176679f1cb5",
     "social_links": {},
     "analytics": {},
-    "created_at": "2025-08-04T09:03:42.802Z",
-    "updated_at": "2025-08-22T11:30:29.059Z",
+    "created_at": "2025-08-28T09:25:39.015Z",
+    "updated_at": "2025-08-28T09:26:20.195Z",
     "__v": 0
   },
   "pages": [
     {
-      "_id": "689077753ef483401bd09ede",
-      "site_id": "6890776e3ef483401bd09ed2",
+      "_id": "68b020a98084b176679f1cc4",
+      "site_id": "68b020928084b176679f1cb5",
       "title": "Home",
       "slug": "home",
       "is_homepage": false,
       "order_index": 0,
-      "created_at": "2025-08-04T09:03:49.479Z",
-      "updated_at": "2025-08-04T09:03:49.480Z",
+      "created_at": "2025-08-28T09:26:01.840Z",
+      "updated_at": "2025-08-28T09:26:01.840Z",
       "__v": 0,
       "sections": [
         {
-          "_id": "68a852a9a80eaaa940492561",
-          "page_id": "689077753ef483401bd09ede",
+          "_id": "68b020b08084b176679f1cc9",
+          "page_id": "68b020a98084b176679f1cc4",
           "type": "heading",
           "label": "Heading",
           "order_index": 0,
           "content": {
-            "text": "New Section Heading",
-            "level": 2,
-            "backgroundColor": "#14213D",
+            "text": "Intellect School",
+            "level": 1,
+            "backgroundColor": "#003049",
             "backgroundImage": {
               "hide": true,
               "src": "",
               "alt": ""
             }
           },
-          "created_at": "2025-08-22T11:21:13.320Z",
-          "updated_at": "2025-08-22T11:30:38.074Z",
+          "created_at": "2025-08-28T09:26:08.440Z",
+          "updated_at": "2025-08-28T09:26:35.909Z",
           "__v": 0
         },
         {
-          "_id": "68a852b5a80eaaa940492565",
-          "page_id": "689077753ef483401bd09ede",
+          "_id": "68b020d48084b176679f1cd1",
+          "page_id": "68b020a98084b176679f1cc4",
           "type": "carousel",
           "label": "Animated Carousel",
           "order_index": 1,
@@ -311,7 +341,7 @@ const websiteData = {
                   {
                     "text": "Learn More",
                     "link": "/contact",
-                    "pageId": "68a8552ea80eaaa9404925c8"
+                    "pageId": "68b020ff8084b176679f1ce3"
                   },
                   {
                     "text": "Apply Now",
@@ -327,29 +357,29 @@ const websiteData = {
                   "Expert faculty guidance",
                   "State-of-the-art facilities"
                 ],
-                "image": "https://morweb.org/get/files/image/galleries/A_woman_sits_at_a_table_reading_a_book_while_her_laptop_is_open_in_front_of_her.png?resize=700x0",
+                "image": "https://cdn.kastatic.org/images/lohp/trusted_content_icon.png",
                 "buttons": [
                   {
                     "text": "View Programs",
                     "link": "/courses",
-                    "pageId": "68a85506a80eaaa9404925bd"
+                    "pageId": "68b0210d8084b176679f1ce8"
                   }
                 ]
               }
             ]
           },
-          "created_at": "2025-08-22T11:21:25.769Z",
-          "updated_at": "2025-08-22T11:34:06.456Z",
+          "created_at": "2025-08-28T09:26:44.597Z",
+          "updated_at": "2025-08-28T09:47:41.764Z",
           "__v": 0
         },
         {
-          "_id": "68a852c1a80eaaa94049256f",
-          "page_id": "689077753ef483401bd09ede",
+          "_id": "68b021758084b176679f1cf7",
+          "page_id": "68b020a98084b176679f1cc4",
           "type": "products",
           "label": "Products Grid",
           "order_index": 2,
           "content": {
-            "title": "Our Products",
+            "title": "Our Courses",
             "description": "Explore our range of educational products",
             "showAllButton": {
               "show": false,
@@ -358,91 +388,19 @@ const websiteData = {
               "pageId": ""
             }
           },
-          "created_at": "2025-08-22T11:21:37.052Z",
-          "updated_at": "2025-08-22T11:21:37.055Z",
+          "created_at": "2025-08-28T09:29:25.057Z",
+          "updated_at": "2025-08-28T09:30:00.902Z",
           "__v": 0
         },
         {
-          "_id": "68a852dda80eaaa940492573",
-          "page_id": "689077753ef483401bd09ede",
-          "type": "carousel",
-          "label": "Animated Carousel",
-          "order_index": 3,
-          "content": {
-            "backgroundColor": "#f0f9ff",
-            "textPosition": "right",
-            "items": [
-              {
-                "title": "Welcome to Our School",
-                "descriptions": [
-                  "Discover excellence in education"
-                ],
-                "image": "https://cdn-icons-png.flaticon.com/512/10240/10240131.png",
-                "buttons": [
-                  {
-                    "text": "Learn More",
-                    "link": "/contact",
-                    "pageId": "68a8552ea80eaaa9404925c8"
-                  }
-                ]
-              }
-            ]
-          },
-          "created_at": "2025-08-22T11:22:05.300Z",
-          "updated_at": "2025-08-22T11:34:29.473Z",
-          "__v": 0
-        },
-        {
-          "_id": "68a8531ca80eaaa94049258e",
-          "page_id": "689077753ef483401bd09ede",
-          "type": "testimonials",
-          "label": "Testimonials",
-          "order_index": 4,
-          "content": {
-            "title": "What Our Students Say",
-            "backgroundColor": "#14213D",
-            "backgroundImage": {
-              "hide": true,
-              "src": "",
-              "alt": ""
-            },
-            "testimonials": [
-              {
-                "quote": "This school has transformed my learning experience. The teachers are amazing!",
-                "author": "Sarah Johnson",
-                "role": "Student",
-                "image": "https://static.vecteezy.com/system/resources/thumbnails/032/712/071/small/a-young-african-american-man-in-a-brown-t-shirt-poses-against-a-gray-background-man-looking-at-camera-ai-generative-photo.jpg",
-                "rating": 4
-              },
-              {
-                "quote": "The best decision I made was choosing this school for my education.",
-                "author": "Michael Chen",
-                "role": "Graduate",
-                "image": "data:image/jpeg;base64,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",
-                "rating": 5
-              },
-              {
-                "quote": "Outstanding facilities and dedicated staff. Highly recommended!",
-                "author": "Emily Rodriguez",
-                "role": "Parent",
-                "image": "https://static.vecteezy.com/system/resources/thumbnails/038/962/461/small/ai-generated-caucasian-successful-confident-young-businesswoman-ceo-boss-bank-employee-worker-manager-with-arms-crossed-in-formal-wear-isolated-in-white-background-photo.jpg",
-                "rating": 3
-              }
-            ]
-          },
-          "created_at": "2025-08-22T11:23:08.544Z",
-          "updated_at": "2025-08-22T11:30:45.725Z",
-          "__v": 0
-        },
-        {
-          "_id": "68a854b1a80eaaa9404925ab",
-          "page_id": "689077753ef483401bd09ede",
+          "_id": "68b0219e8084b176679f1cfd",
+          "page_id": "68b020a98084b176679f1cc4",
           "type": "features",
           "label": "Features Grid",
-          "order_index": 5,
+          "order_index": 3,
           "content": {
             "title": "Features Section",
-            "backgroundColor": "#FFFFFF",
+            "backgroundColor": "#f8fafc",
             "items": [
               {
                 "title": "Quality Education",
@@ -461,63 +419,133 @@ const websiteData = {
               }
             ]
           },
-          "created_at": "2025-08-22T11:29:53.837Z",
-          "updated_at": "2025-08-22T11:31:06.386Z",
+          "created_at": "2025-08-28T09:30:06.953Z",
+          "updated_at": "2025-08-28T09:30:06.960Z",
           "__v": 0
-        }
-      ]
-    },
-    {
-      "_id": "68a85506a80eaaa9404925bd",
-      "site_id": "6890776e3ef483401bd09ed2",
-      "title": "Courses",
-      "slug": "courses",
-      "is_homepage": false,
-      "order_index": 1,
-      "created_at": "2025-08-22T11:31:18.633Z",
-      "updated_at": "2025-08-22T11:31:18.634Z",
-      "__v": 0,
-      "sections": [
+        },
         {
-          "_id": "68a8550fa80eaaa9404925c2",
-          "page_id": "68a85506a80eaaa9404925bd",
-          "type": "allProducts",
-          "label": "All Products Page",
-          "order_index": 0,
+          "_id": "68b021aa8084b176679f1d01",
+          "page_id": "68b020a98084b176679f1cc4",
+          "type": "carousel",
+          "label": "Animated Carousel",
+          "order_index": 4,
           "content": {
-            "title": "Courses",
-            "description": "Browse our complete collection of educational products",
-            "showSearch": true,
-            "showFilters": true,
-            "showSorting": true,
-            "itemsPerPage": 12,
-            "layout": "grid"
+            "backgroundColor": "#f0f9ff",
+            "textPosition": "right",
+            "items": [
+              {
+                "title": "Differentiate your classroom and engage every student.",
+                "descriptions": [
+                  "We empower teachers to support their entire classroom. 90% of US teachers who have used Khan Academy have found us effective."
+                ],
+                "image": "https://cdn.kastatic.org/images/lohp/faces_collage_2@2x.png",
+                "buttons": [
+                  {
+                    "text": "Teachers, start here",
+                    "link": "/signin",
+                    "pageId": "signin"
+                  }
+                ]
+              }
+            ]
           },
-          "created_at": "2025-08-22T11:31:27.992Z",
-          "updated_at": "2025-08-22T11:31:50.342Z",
+          "created_at": "2025-08-28T09:30:18.689Z",
+          "updated_at": "2025-08-28T09:31:47.415Z",
+          "__v": 0
+        },
+        {
+          "_id": "68b022188084b176679f1d15",
+          "page_id": "68b020a98084b176679f1cc4",
+          "type": "carousel",
+          "label": "Animated Carousel",
+          "order_index": 5,
+          "content": {
+            "backgroundColor": "#f0f9ff",
+            "textPosition": "left",
+            "items": [
+              {
+                "title": "You can learn anything.",
+                "descriptions": [
+                  "Build a deep, solid understanding in math, science, and more."
+                ],
+                "image": "https://cdn.kastatic.org/images/lohp/laptop_collage@2x.png",
+                "buttons": [
+                  {
+                    "text": "Learners, start here ",
+                    "link": "/signup",
+                    "pageId": "signup"
+                  }
+                ]
+              }
+            ]
+          },
+          "created_at": "2025-08-28T09:32:08.474Z",
+          "updated_at": "2025-08-28T09:32:58.478Z",
+          "__v": 0
+        },
+        {
+          "_id": "68b022658084b176679f1d24",
+          "page_id": "68b020a98084b176679f1cc4",
+          "type": "testimonials",
+          "label": "Testimonials",
+          "order_index": 6,
+          "content": {
+            "title": "What Our Customers Say",
+            "backgroundColor": "#003049",
+            "backgroundImage": {
+              "hide": true,
+              "src": "",
+              "alt": ""
+            },
+            "testimonials": [
+              {
+                "quote": "This school has transformed my learning experience. The teachers are amazing!",
+                "author": "Sarah Johnson",
+                "role": "Student",
+                "image": "https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTA5L3Jhd3BpeGVsX29mZmljZV8zMV9waG90b19vZl95b3VuZ19naXJsX3dpdGhfc3R1ZGVudF9iYWNrcGFja19hbl82OWU5MGJmMC04OTRiLTQ3Y2QtOTlmNS1kZTBmZmU0MThiYWJfMS5wbmc.png",
+                "rating": 5
+              },
+              {
+                "quote": "The best decision I made was choosing this school for my education.",
+                "author": "Michael Chen",
+                "role": "Graduate",
+                "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrsNGuds9X8EeqS3mg9dhACdaTaouCXhVsQg&s",
+                "rating": 4
+              },
+              {
+                "quote": "Outstanding facilities and dedicated staff. Highly recommended!",
+                "author": "Emily Rodriguez",
+                "role": "Parent",
+                "image": "data:image/jpeg;base64,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",
+                "rating": 5
+              }
+            ]
+          },
+          "created_at": "2025-08-28T09:33:25.438Z",
+          "updated_at": "2025-08-28T09:36:11.185Z",
           "__v": 0
         }
       ]
     },
     {
-      "_id": "68a8552ea80eaaa9404925c8",
-      "site_id": "6890776e3ef483401bd09ed2",
+      "_id": "68b020ff8084b176679f1ce3",
+      "site_id": "68b020928084b176679f1cb5",
       "title": "Contact",
       "slug": "contact",
       "is_homepage": false,
-      "order_index": 2,
-      "created_at": "2025-08-22T11:31:58.910Z",
-      "updated_at": "2025-08-22T11:31:58.911Z",
+      "order_index": 1,
+      "created_at": "2025-08-28T09:27:27.515Z",
+      "updated_at": "2025-08-28T09:27:27.515Z",
       "__v": 0,
       "sections": [
         {
-          "_id": "68a8554ca80eaaa9404925d2",
-          "page_id": "68a8552ea80eaaa9404925c8",
+          "_id": "68b0234e8084b176679f1d30",
+          "page_id": "68b020ff8084b176679f1ce3",
           "type": "heading",
           "label": "Heading",
           "order_index": 0,
           "content": {
-            "text": "Contact",
+            "text": "Contact Us",
             "level": 1,
             "backgroundColor": "",
             "backgroundImage": {
@@ -526,13 +554,13 @@ const websiteData = {
               "alt": ""
             }
           },
-          "created_at": "2025-08-22T11:32:28.601Z",
-          "updated_at": "2025-08-22T11:32:44.173Z",
+          "created_at": "2025-08-28T09:37:18.624Z",
+          "updated_at": "2025-08-28T09:47:01.892Z",
           "__v": 0
         },
         {
-          "_id": "68a85537a80eaaa9404925cd",
-          "page_id": "68a8552ea80eaaa9404925c8",
+          "_id": "68b023328084b176679f1d2b",
+          "page_id": "68b020ff8084b176679f1ce3",
           "type": "contact_form",
           "label": "Contact Form",
           "order_index": 1,
@@ -551,7 +579,7 @@ const websiteData = {
             },
             "title": "Get in Touch",
             "address": "123 Education Street, Learning City, 54321",
-            "email": "info@schoolname.edu",
+            "email": "attiamou3adh@gmail.com",
             "phone": "(555) 123-4567",
             "description": "We'd love to hear from you. Send us a message and we'll respond as soon as possible.",
             "buttonText": "Send Message",
@@ -560,8 +588,40 @@ const websiteData = {
               "link": "#"
             }
           },
-          "created_at": "2025-08-22T11:32:07.848Z",
-          "updated_at": "2025-08-22T12:25:21.802Z",
+          "created_at": "2025-08-28T09:36:50.011Z",
+          "updated_at": "2025-08-28T09:44:46.523Z",
+          "__v": 0
+        }
+      ]
+    },
+    {
+      "_id": "68b0210d8084b176679f1ce8",
+      "site_id": "68b020928084b176679f1cb5",
+      "title": "Courses",
+      "slug": "courses",
+      "is_homepage": false,
+      "order_index": 2,
+      "created_at": "2025-08-28T09:27:41.008Z",
+      "updated_at": "2025-08-28T09:27:41.008Z",
+      "__v": 0,
+      "sections": [
+        {
+          "_id": "68b025178084b176679f1d3d",
+          "page_id": "68b0210d8084b176679f1ce8",
+          "type": "allProducts",
+          "label": "All Products Page",
+          "order_index": 0,
+          "content": {
+            "title": "All Courses",
+            "description": "Browse our complete collection of educational products",
+            "showSearch": true,
+            "showFilters": true,
+            "showSorting": true,
+            "itemsPerPage": 12,
+            "layout": "grid"
+          },
+          "created_at": "2025-08-28T09:44:55.935Z",
+          "updated_at": "2025-08-28T09:45:09.593Z",
           "__v": 0
         }
       ]
@@ -570,7 +630,7 @@ const websiteData = {
 };
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
 export default function HomePage(props: PageProps) {
-  const [activePage, setActivePage] = useState('689077753ef483401bd09ede');
+  const [activePage, setActivePage] = useState('68b020a98084b176679f1cc4');
  const [authView, setAuthView] = useState<'signin' | 'signup' | 'product' | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
  
@@ -893,6 +953,7 @@ export default function HomePage(props: PageProps) {
       password: "",
       schoolId: websiteData.schoolId,
       fullName: "",
+      role: "student",
     });
     const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -913,7 +974,7 @@ export default function HomePage(props: PageProps) {
         const data = await response.json();
         console.log("Login response:", data);
         if (data.token) {
-          setAuthView(null);
+          setAuthView("signin");
         }
       } catch (error) {
         console.error("Login error:", error);
@@ -988,7 +1049,26 @@ export default function HomePage(props: PageProps) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
               />
             </div>
-
+            {/* role */}
+            <div>
+              <label
+                htmlFor="role"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Role
+              </label>
+              <select
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                id="role"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+              >
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+              
+              </select>
+            </div>
+            {/* password */}
             <div>
               <label
                 htmlFor="signupPassword"

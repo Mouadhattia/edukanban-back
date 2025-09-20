@@ -37,8 +37,6 @@ router.post('/upload/image',  siteController.uploadImage);
 router.get('/images/:filename', siteController.getImage);
 
 // gennrate next App 
-
-
 router.get('/genrate-app/:id',siteGeneratorController.genrateNextApp)
 
 

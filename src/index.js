@@ -10,6 +10,11 @@ const adminRoutes = require("./routes/adminRoutes");
 const schoolRoutes = require("./routes/schoolRoutes");
 const organizationRoutes = require("./routes/organizationRoutes");
 const siteBuilderRoutes = require("./routes/siteBuilderRoutes");
+const templateRoutes = require("./routes/templateRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+const studentRoutes = require("./routes/studentRoutes");
+const teacherRoutes = require("./routes/teacherRoutes");
+const boardRoutes = require("./routes/boardRoutes");
 
 // Initialize express app
 const app = express();
@@ -25,7 +30,11 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/school", schoolRoutes);
 app.use("/api/organization", organizationRoutes);
 app.use("/api/builder", siteBuilderRoutes);
-
+app.use("/api/template", templateRoutes);
+app.use("/api/order", orderRoutes);
+app.use("/api/student", studentRoutes);
+app.use("/api/teacher", teacherRoutes);
+app.use("/api/board", boardRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #1A535C;
+  --color-secondary: #4ECDC4;
+  --color-accent: #FF6B6B;
+  --color-background: #F7FFF7;
+  --color-text: #184A52;
+}
+
+body {
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-8 py-3 rounded-md hover:opacity-90 transition-colors;
+    background: var(--color-accent);
+    color: var(--color-secondary);
+    border: 2px solid var(--color-primary);
+  }
+}

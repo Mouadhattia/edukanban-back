@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Token Invalid or Expired</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+        background-color: #fff;
+        color: #000;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .card {
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 10px;
+        max-width: 400px;
+        width: 100%;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      h1 {
+        font-size: 2.2em;
+        margin: 15px 0;
+        font-weight: bold;
+      }
+
+      p {
+        font-size: 1.1em;
+        margin: 8px 0;
+      }
+
+      a {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        text-decoration: none;
+        color: #fff;
+        background-color: #000;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+
+      a:hover {
+        background-color: #333;
+      }
+
+      .error-icon {
+        font-size: 50px;
+        color: red;
+      }
+    </style>
+    <!-- Load Google Material Icons for error -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <span class="material-icons error-icon">error</span>
+        <h1>Token Invalid or Expired</h1>
+        <p>Unfortunately, your verification link is no longer valid.</p>
+      </div>
+    </div>
+  </body>
+</html>

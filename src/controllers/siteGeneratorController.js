@@ -75,6 +75,9 @@ const genrateNextApp = async (req, res) => {
       path.join(appPath, "package.json"),
       JSON.stringify(packageJson, null, 2)
     );
+    // Generate .env file
+    const envFile = `NEXT_PUBLIC_API_BASE_URL=${process.env.NEXT_PUBLIC_API_BASE_URL}`;
+    fs.writeFileSync(path.join(appPath, ".env"), envFile);
 
     // Generate next.config.js
     const nextConfig = generateNextConfig(websiteData);
@@ -169,6 +172,7 @@ function generatePackageJson(appName, websiteData) {
     devDependencies: {
       eslint: "^8",
       "eslint-config-next": "14.0.4",
+      dotenv: "^16.3.1",
     },
   };
 }
@@ -2210,6 +2214,7 @@ export default function ${page.title.replace(
       password: "",
       schoolId: websiteData.schoolId,
       fullName: "",
+      role: "student",
     });
     const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -2230,7 +2235,7 @@ export default function ${page.title.replace(
         const data = await response.json();
         console.log("Login response:", data);
         if (data.token) {
-          setAuthView(null);
+          setAuthView("signin");
         }
       } catch (error) {
         console.error("Login error:", error);
@@ -2305,7 +2310,26 @@ export default function ${page.title.replace(
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
               />
             </div>
-
+            {/* role */}
+            <div>
+              <label
+                htmlFor="role"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Role
+              </label>
+              <select
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                id="role"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+              >
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+              
+              </select>
+            </div>
+            {/* password */}
             <div>
               <label
                 htmlFor="signupPassword"

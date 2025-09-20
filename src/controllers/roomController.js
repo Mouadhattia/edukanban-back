@@ -4,7 +4,6 @@ const Room = require("../models/Room");
 // get all rooms
 const getAllRooms = async (req, res) => {
   try {
-    console.log(req.query);
     const { schoolId, search } = req.query;
     const query = {
       name: { $regex: search, $options: "i" },

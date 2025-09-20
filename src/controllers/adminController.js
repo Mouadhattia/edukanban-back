@@ -8,7 +8,7 @@ const moment = require("moment");
 // User Management
 const getUsers = async (req, res) => {
   try {
-    const { page = 1, limit = 10, search, role } = req.query;
+    const { page = 1, limit = 10, search, role, schoolId } = req.query;
     const query = {};
 
     // Search filter
@@ -18,7 +18,10 @@ const getUsers = async (req, res) => {
         { fullName: { $regex: search, $options: "i" } },
       ];
     }
-
+    // get users when schoolIds contains the schoolId
+    if (schoolId) {
+      query.schoolIds = { $in: [schoolId] };
+    }
     // Role filter
     if (role && role !== "undefined") {
       query.role = role;

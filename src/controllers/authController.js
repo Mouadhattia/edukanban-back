@@ -41,7 +41,7 @@ function generatePassword(
 const register = async (req, res) => {
   try {
     const { email, password, fullName, invitationCode } = req.body;
-
+   
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -78,7 +78,7 @@ const register = async (req, res) => {
         const token = user.generateAuthToken();
 
         await user.save();
-        await sendVerificationEmail(user.email, verificationToken);
+        await sendVerificationEmail(user);
 
         return res.status(201).json({
           message: "School and school admin registered successfully",
@@ -88,7 +88,7 @@ const register = async (req, res) => {
             email: user.email,
             role: user.role,
             fullName: user.fullName,
-            schoolId: user.schoolId,
+            schoolId: user.schoolIds,
           },
           school,
         });
@@ -118,7 +118,7 @@ const register = async (req, res) => {
           organizationIds: [organization._id],
         });
         await user.save();
-
+        await sendVerificationEmail(user);
         const token = user.generateAuthToken();
         return res.status(201).json({
           message:
@@ -129,7 +129,7 @@ const register = async (req, res) => {
             email: user.email,
             role: user.role,
             fullName: user.fullName,
-            organizationId: user.organizationId,
+            organizationId: user.organizationIds,
           },
           organization,
         });
@@ -186,11 +186,6 @@ const register = async (req, res) => {
 
       const user = new User(userData);
       // Generate email verification token
-      const verificationToken = generateVerificationToken(user._id);
-      user.emailVerificationToken = verificationToken;
-      user.emailVerificationExpires = new Date(
-        Date.now() + 24 * 60 * 60 * 1000
-      ); // 24 hours
 
       await user.save();
 
@@ -198,8 +193,7 @@ const register = async (req, res) => {
       await code.markAsUsed(user._id);
 
       // Send verification email
-      await sendVerificationEmail(user.email, verificationToken);
-
+      await sendVerificationEmail(user);
       const token = user.generateAuthToken();
       return res.status(201).json({
         message: "User registered successfully",
@@ -209,8 +203,8 @@ const register = async (req, res) => {
           email: user.email,
           role: user.role,
           fullName: user.fullName,
-          schoolId: user.schoolId,
-          organizationId: user.organizationId,
+          schoolId: user.schoolIds,
+          organizationId: user.organizationIds,
         },
       });
     }
@@ -482,13 +476,14 @@ const resetPassword = async (req, res) => {
 // registerUser
 const registerUser = async (req, res) => {
   try {
-    const { email, password, fullName, schoolId } = req.body;
+    const { email, password, fullName, schoolId, role } = req.body;
+
     const user = new User({
       email,
       password,
       fullName,
       schoolIds: [schoolId],
-      role: ROLES.STUDENT,
+      role: role,
     });
     // Generate email verification token
     await user.save();

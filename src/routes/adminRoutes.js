@@ -1,6 +1,7 @@
 const express = require("express");
 const { body } = require("express-validator");
 const adminController = require("../controllers/adminController");
+const siteController = require("../controllers/siteController");
 const { verifyToken } = require("../middleware/auth");
 const { ROLES } = require("../models/User");
 
@@ -211,5 +212,6 @@ router.get(
   isSuperAdmin,
   adminController.getUserDistribution
 );
+router.get("/all-sites", isSuperAdmin, siteController.getAllSites);
 
 module.exports = router;

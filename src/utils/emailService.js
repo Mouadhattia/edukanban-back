@@ -21,12 +21,14 @@ const generateToken = () => {
 // Send verification email
 const sendVerificationEmail = async (user) => {
   const token = generateToken();
-  const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${token}`;
+  const verificationLink = `http://localhost:5000/api/template/mail-verified/${token}`;
 
   // Update user with verification token
 
   user.emailVerificationToken = token;
-  user.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  user.emailVerificationExpires = expiresAt;
+
   await user.save();
 
   // Send email
@@ -51,7 +53,8 @@ const sendPasswordResetEmail = async (user) => {
 
   // Update user with reset token
   user.resetPasswordToken = token;
-  user.resetPasswordExpires = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+  const expiresAt = new Date(Date.now() + 1 * 60 * 60 * 1000);
+  user.resetPasswordExpires = expiresAt;
   await user.save();
 
   // Send email
@@ -78,13 +81,13 @@ const verifyEmailToken = async (token) => {
   });
 
   if (!user) {
-    throw new Error("Invalid or expired verification token");
+    return "Invalid or expired verification token";
   }
-
-  user.isEmailVerified = true;
-  user.emailVerificationToken = undefined;
-  user.emailVerificationExpires = undefined;
-  await user.save();
+  if (!user.isEmailVerified) {
+    user.isEmailVerified = true;
+    user.status = "active";
+    await user.save();
+  }
 
   return user;
 };

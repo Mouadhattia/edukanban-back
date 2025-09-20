@@ -28,10 +28,18 @@ const classroomSchema = new mongoose.Schema(
       ref: "StudyPeriod",
       required: true,
     },
+    courseId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+    },
     status: {
       type: String,
       enum: ["active", "archived"],
       default: "active",
+    },
+    capacity: {
+      type: Number,
+      default: 15,
     },
   },
   {

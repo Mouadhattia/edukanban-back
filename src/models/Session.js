@@ -10,7 +10,7 @@ const sessionSchema = new Schema(
     },
     classRoom: {
       type: Schema.Types.ObjectId,
-      ref: "ClassRoom",
+      ref: "Classroom",
       required: true,
     },
     subject: {

@@ -16,6 +16,11 @@ const {
   updateClassroom,
   deleteClassroom,
   createFullClassroom,
+  assignCourseToClassroom,
+  removeCourseFromClassroom,
+  assignStudentToClassroom,
+  removeStudentFromClassroom,
+  getAllClassroomsByStudentId,
 } = require("../controllers/calssRoomController");
 const {
   getAllSubjects,
@@ -69,27 +74,33 @@ const {
 
 function unless(skipped, middleware) {
   return (req, res, next) => {
-    // check method + path
-    const shouldSkip = skipped.some(
-      (rule) => rule.path === req.path && rule.method === req.method
-    );
+    const shouldSkip = skipped.some((rule) => {
+      if (rule.path.endsWith("/*")) {
+        const basePath = rule.path.slice(0, -2);
+        return req.path.startsWith(basePath) && rule.method === req.method;
+      }
+      return rule.path === req.path && rule.method === req.method;
+    });
 
     if (shouldSkip) {
-      return next(); // skip middleware
+      return next();
     }
     return middleware(req, res, next);
   };
 }
 
-
-// Skip ONLY GET /courses
-const skippedRoutes = [{ path: "/courses", method: "GET" }];
+// Keep your original pattern
+const skippedRoutes = [
+  { path: "/courses", method: "GET" },
+  { path: "/courses/*", method: "GET" },
+];
 
 // Middleware to check if user is a school admin
 const isSchoolAdmin = (req, res, next) => {
   if (
     req.user.role !== ROLES.SCHOOL_ADMIN &&
     req.user.role !== ROLES.SUPER_ADMIN
+    // req.user.role !== ROLES.STUDENT
   ) {
     return res
       .status(403)
@@ -146,8 +157,8 @@ const validateInvitation = (req, res, next) => {
   next();
 };
 
-router.use(unless(skippedRoutes, verifyToken));
-router.use(unless(skippedRoutes, isSchoolAdmin));
+// router.use(unless(skippedRoutes, verifyToken));
+// router.use(unless(skippedRoutes, isSchoolAdmin));
 
 // Get users within the same school (with pagination and filters)
 router.get("/users", getSchoolUsers);
@@ -218,5 +229,12 @@ router.get("/courses", getAllCourses);
 router.get("/courses/:id", getCourseById);
 router.put("/courses/:id", updateCourseById);
 router.delete("/courses/:id", deleteCourseById);
+
+// assign a course to a class room
+router.post("/classrooms/assign-course", assignCourseToClassroom);
+router.post("/classrooms/remove-course", removeCourseFromClassroom);
+router.post("/classrooms/assign-student", assignStudentToClassroom);
+router.post("/classrooms/remove-student", removeStudentFromClassroom);
+router.get("/classrooms/student/:studentId", getAllClassroomsByStudentId);
 
 module.exports = router;
